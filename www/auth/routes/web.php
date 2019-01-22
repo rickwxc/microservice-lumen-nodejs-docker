@@ -24,6 +24,7 @@ $router->group(
         'prefix' => '/users'
       ], function ($router) {
         $router->get('/test', 'UsersController@test');
+        $router->get('/welcome', 'UsersController@welcome');
         $router->post('/register', 'UsersController@register');
         $router->post('/login', 'UsersController@login');
       });
