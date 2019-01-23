@@ -15,8 +15,22 @@ $router->get('/', function () use ($router) {
   return $router->app->version();
 });
 
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTAuth;
+$router->post('login', function(Request $request, JWTAuth $jwt) {
+    $this->validate($request, [
+        'email' => 'required|email|exists:users',
+        'password' => 'required|string'
+    ]);
+    if (! $token = $jwt->attempt($request->only(['email', 'password']))) {
+        return response()->json(['user_not_found'], 404);
+    }
+    return response()->json(compact('token'));
+});
+
 $router->group(
   [
+    //'middleware' => 'auth',
     'prefix' => '/v1'
   ], function ($router) {
     $router->group(
@@ -30,3 +44,12 @@ $router->group(
       });
   }
 );
+
+$router->group([
+  'middleware' => 'auth'
+], function ($router) {
+    $router->post('/private_data', function (JWTAuth $jwt) {
+        $user = $jwt->parseToken()->toUser();
+        return $user;
+    });
+});

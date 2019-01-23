@@ -73,6 +73,15 @@ class UserControllerTest extends TestCase
     }
 
     /** @test **/
+    public function private_data()
+    {
+
+      $this->post('/private_data')
+        ->seeStatusCode(401)
+        ; 
+    }
+
+    /** @test **/
     public function test()
     {
       $user = factory('App\User', 2)->create();
