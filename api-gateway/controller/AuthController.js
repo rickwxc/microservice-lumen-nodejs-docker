@@ -9,7 +9,7 @@ var config = require('../config');
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 
-router.post('/register', (req, res) => {
+router.post('/old_register', (req, res) => {
   let hashedPassword = bcrypt.hashSync(req.body.password, 8)
   console.log(hashedPassword)
   User.create({
@@ -25,7 +25,7 @@ router.post('/register', (req, res) => {
   })
 })
 
-router.post('/login', (req, res) => {
+router.post('/old_login', (req, res) => {
   User.findOne({ email: req.body.email }, (err, user) => {
     if (err) return res.status(500).send("Internal server error")
     if (!user) return res.status(404).send("User not found")
