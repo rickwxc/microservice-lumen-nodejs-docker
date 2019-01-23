@@ -1,6 +1,19 @@
 version: '3'
 services:
   ### PHP-FPM Container
+  nodejs:
+    build: ./image/nodejs/
+    container_name: nodejs-apigatway
+    volumes:
+      - ./api-gateway/:/usr/src/app
+    ports:
+      - "8081:3000"
+      - "3000:3000"
+    command: tail -f /dev/null
+    links:
+      - php
+    networks:
+      - gateway
   php:
     build: ./image/php/
     #ports:
