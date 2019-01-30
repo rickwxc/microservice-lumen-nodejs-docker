@@ -15,6 +15,14 @@ router.post('/login', (req, res) => {
   })
 })
 
+router.post('/private_data', (req, res) => {
+  api.post(req.path, req.body).then(resp => {
+    res.send(resp.data)
+  }, (err, resp) => {
+    if (err) return res.status(500).json({error: 'no access!'})
+  })
+})
+
 router.post('/echo', isAuthorized, (req, res) => {
   res.send("Authenticate successfully!")
 })
