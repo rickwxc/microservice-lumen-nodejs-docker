@@ -1,4 +1,0 @@
-curl -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9sb2NhbGhvc3Q6ODA4MFwvbG9naW4iLCJpYXQiOjE1NDgxMjg1NzUsImV4cCI6MTU0ODEzMjE3NSwibmJmIjoxNTQ4MTI4NTc1LCJqdGkiOiJxc1JWMXRyZ2REczJKM0lFIiwic3ViIjo2LCJwcnYiOiJmNmI3MTU0OWRiOGMyYzQyYjc1ODI3YWE0NGYwMmI3ZWU1MjlkMjRkIn0.8ZU1fzrEGxNV26i7-O_bDwOKTeMOnBj2uH4bs1_AaRs" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:8080/private_data
-
-
-
