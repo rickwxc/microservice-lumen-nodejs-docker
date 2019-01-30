@@ -38,8 +38,7 @@ class UsersController extends Controller
     return response()->json(
       ['user' => $user], 
       201, 
-      ['Location' => '/users/3']
-      //['Location' => route('books.show', ['id' => $book->id]
+      ['Location' => '/users/'.$user->id]
     );
   }
 
@@ -52,11 +51,5 @@ class UsersController extends Controller
   public function test(Request $request)
   {
      return $this->collection(User::all(), new UserTransformer());
-    //return $this->fractal->collection(User::all(), new UserTransformer());
-    // todo here
-    //return FractalResponse::collection(User::all(), new UserTransformer());
-    return response()->json([
-      'data' => User::all()->toArray()
-    ]);
   }
 }

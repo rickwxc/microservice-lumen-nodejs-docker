@@ -30,7 +30,6 @@ $router->post('login', function(Request $request, JWTAuth $jwt) {
 
 $router->group(
   [
-    //'middleware' => 'auth',
     'prefix' => '/v1'
   ], function ($router) {
     $router->group(
