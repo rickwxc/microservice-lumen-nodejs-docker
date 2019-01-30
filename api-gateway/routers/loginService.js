@@ -15,10 +15,8 @@ router.post('/login', (req, res) => {
   })
 })
 
-router.get('/v1*', (req, res) => {
-  api.get(req.path).then(resp => {
-    res.send(resp.data)
-  })
+router.post('/echo', isAuthorized, (req, res) => {
+  res.send("Authenticate successfully!")
 })
 
 module.exports = router

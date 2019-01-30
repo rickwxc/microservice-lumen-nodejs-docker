@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router()
-var feedRouter = require('./feedService')
-var hashtagRouter = require('./hashtagService')
+var loginRouter = require('./loginService')
 var authRouter = require('../controller/AuthController')
 
 router.use((req, res, next) => {
@@ -9,8 +8,7 @@ router.use((req, res, next) => {
     next()
 })
 
-router.use(feedRouter)
-router.use(hashtagRouter)
+router.use(loginRouter)
 router.use(authRouter)
 
 module.exports = router
