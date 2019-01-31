@@ -19,6 +19,7 @@
         </whitelist>
     </filter>
     <php>
+        <env name="DB_DATABASE" value="stores_test"/>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>

@@ -9,6 +9,10 @@ class JwtMiddleware
     public function handle($request, Closure $next, $guard = null)
     {
 
+      if (env('APP_ENV') === 'testing') {
+        return $next($request);
+      }
+
 // todo: move somewhere else
      
 $authServicePublicKey = <<<EOD

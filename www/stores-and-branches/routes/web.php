@@ -14,23 +14,30 @@
 use Illuminate\Http\Request;
 
 $router->get('/', function () use ($router) {
-    return 'stores is here, '.$router->app->version();
+    return $router->app->version();
 });
-
-$router->get('/stores/echo', function () use ($router) {
-  return 'hi, stores is here via GET';
-});
-
-$router->post('/stores-echo', function () use ($router) {
-  return 'hi, stores is here via POST';
-});
-
 
 $router->group(
     ['middleware' => 'jwt.auth'], 
     function() use ($router) {
         $router->post('/stores-protected-data', function(Request $request) {
-            return 'Greate, jwt works: '.json_encode($request->auth);
+            return 'jwt works: '.json_encode($request->auth);
         });
     }
 );
+
+$router->group(
+  [
+    'middleware' => 'jwt.auth',
+    'prefix' => '/v1'
+  ], function ($router) {
+    $router->group(
+      [
+        'prefix' => '/stores'
+      ], function ($router) {
+        $router->get('/', 'StoresController@index');
+        $router->get('/{id}', 'StoresController@show');
+      });
+  }
+);
+
