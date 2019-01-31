@@ -11,6 +11,26 @@
 |
 */
 
+use Illuminate\Http\Request;
+
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return 'stores is here, '.$router->app->version();
 });
+
+$router->get('/stores/echo', function () use ($router) {
+  return 'hi, stores is here via GET';
+});
+
+$router->post('/stores-echo', function () use ($router) {
+  return 'hi, stores is here via POST';
+});
+
+
+$router->group(
+    ['middleware' => 'jwt.auth'], 
+    function() use ($router) {
+        $router->post('/stores-protected-data', function(Request $request) {
+            return 'Greate, jwt works: '.json_encode($request->auth);
+        });
+    }
+);
