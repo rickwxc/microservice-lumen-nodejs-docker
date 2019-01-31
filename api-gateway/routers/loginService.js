@@ -21,25 +21,24 @@ router.post('/login', (req, res) => {
   }, (err, user) => {
     if (err) return res.status(500).send("Save token failed")
 
-    res.status(200).send({token: opaque_token})
+    res.status(200).send({api_key: opaque_token})
   })
-
 
   }, (err, resp) => {
     if (err) return res.status(500).json({error: 'login failed'})
   })
 })
 
-router.post('/private_data', (req, res) => {
-  api.post(req.path, req.body).then(resp => {
+router.post('/auth-echo', isAuthorized, (req, res) => {
+  api.post(req.path, req.body, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
     res.send(resp.data)
   }, (err, resp) => {
     if (err) return res.status(500).json({error: 'no access!'})
   })
 })
 
-router.post('/echo', isAuthorized, (req, res) => {
-  res.send("Authenticate successfully!")
+router.post('/api-gateway-echo', isAuthorized, (req, res) => {
+  res.send("Api Key found!")
 })
 
 module.exports = router
