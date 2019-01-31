@@ -15,6 +15,13 @@ Implemented:
 6. Localization for both message and test
 
 
+
+
+for demo purpose, opaque token been created by sha1
+opaque_token = crypto.createHash('sha1').update(jwt_token).digest('hex')
+
+
 Some reference repos: 
 docker original author: git@github.com:netojose/docker-lumen.git
-api-getway: git@github.com:ecojuntak/api-gateway.git 
+api-gateway: git@github.com:ecojuntak/api-gateway.git 
+
