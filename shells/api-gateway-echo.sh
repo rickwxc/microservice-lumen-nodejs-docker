@@ -1,1 +1,1 @@
-curl -H "api_key: e444b1c31b4c61380b7e1b0e1275962bb4270f8e" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:3000/api-gateway-echo
+curl -H "api_key: 34f093c72b95bc7bff098dfa3b099fde9a27f6c3" -H "Content-Type: application/x-www-form-urlencoded" -X POST http://localhost:3000/api-gateway-echo
