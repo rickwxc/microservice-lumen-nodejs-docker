@@ -47,7 +47,7 @@ $router->group(
 $router->group([
   'middleware' => 'auth'
 ], function ($router) {
-    $router->post('/private_data', function (JWTAuth $jwt) {
+    $router->post('/auth-echo', function (JWTAuth $jwt) {
         $user = $jwt->parseToken()->toUser();
         return $user;
     });
