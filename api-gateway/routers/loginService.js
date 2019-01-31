@@ -4,13 +4,12 @@ var router = express.Router()
 const apiAdapter = require('./apiAdapter')
 const isAuthorized = require('../controller/requestAuthenticator')
 
-const BASE_URL = 'http://nginx'
-const api = apiAdapter(BASE_URL)
+const auth_service_api = apiAdapter('http://nginx')
 var ApiToken = require('../model/apitoken');
 
 
 router.post('/login', (req, res) => {
-  api.post(req.path, req.body).then(resp => {
+  auth_service_api.post(req.path, req.body).then(resp => {
     jwt_token =  resp.data['token']
 
     opaque_token = crypto.createHash('sha1').update(jwt_token).digest('hex')
@@ -30,7 +29,7 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/auth-echo', isAuthorized, (req, res) => {
-  api.post(req.path, req.body, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
+  auth_service_api.post(req.path, req.body, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
     res.send(resp.data)
   }, (err, resp) => {
     if (err) return res.status(500).json({error: 'no access!'})
