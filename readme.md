@@ -25,3 +25,4 @@ Some reference repos:
 docker original author: git@github.com:netojose/docker-lumen.git
 api-gateway: git@github.com:ecojuntak/api-gateway.git 
 
+https://medium.com/tech-tajawal/microservice-authentication-and-authorization-solutions-e0e5e74b248a
