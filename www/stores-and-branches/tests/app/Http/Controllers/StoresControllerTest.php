@@ -11,6 +11,7 @@ class StoresTest extends TestCase
   public function setUp()
   {
     parent::setUp();
+    $this->withoutMiddleware();
   }
 
   public function tearDown()
@@ -28,13 +29,16 @@ class StoresTest extends TestCase
       ->seeJson([
         'status' => Store::ACTIVE
       ])
+			->seeJsonStructure([
+				'data' => []
+			])
       ->dontSeeJson([
         'status' => Store::PENDING_DELETE
       ])
       ;
 
     $list = json_decode($this->response->getContent(), true); 
-    $this->assertCount(4, $list);
+    $this->assertCount(4, $list['data']);
   }
 
   public function testGetOneStoreSuccess()
@@ -44,6 +48,9 @@ class StoresTest extends TestCase
 
     $this->get('/v1/stores/'.$storeId)
       ->seeStatusCode(200)
+			->seeJsonStructure([
+				'data' => []
+			])
       ->seeJson([
         'id' => $storeId,
         'status' => Store::ACTIVE
