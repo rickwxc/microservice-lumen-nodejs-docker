@@ -1,4 +1,5 @@
 <?php
+// todo IfHaveTime: add create/update protected fields check
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
@@ -17,6 +18,70 @@ class StoresTest extends TestCase
   public function tearDown()
   {
     parent::tearDown();
+  }
+
+  public function testCreateStore()
+  {
+			$name = 'alice store';
+      $this->notSeeInDatabase('stores', ['name' => $name]);
+
+			$this->post('/v1/stores', [
+        'name' => $name
+      ], ['Accept' => 'application/json'])
+      ->seeStatusCode(201)
+      ->seeHeaderWithRegExp('Location', '#/stores/[\d]+$#')
+			->seeJson([
+				'name' => $name,
+				'status' => Store::ACTIVE
+      ])
+			->seeInDatabase('stores', ['name' => $name])
+      ;
+  }
+
+  public function testCreateStoreFaildDueToMissingName()
+  {
+			$this->post('/v1/stores', [
+				'name' => ''
+      ], ['Accept' => 'application/json'])
+      ->seeStatusCode(422)
+			->notSeeInDatabase('stores', ['name' => ''])
+      ;
+  }
+
+  public function testPutStore()
+  {
+		$old_name = 'alice store';
+		$new_name = 'Bob store';
+		$store = factory(Store::class)->create(['name' => $old_name]);
+		$this->seeInDatabase('stores', ['name' => $old_name]);
+		$this->notSeeInDatabase('stores', ['name' => $new_name]);
+
+		$this->put('/v1/stores/'.$store->id, [
+			'name' => $new_name
+		], ['Accept' => 'application/json'])
+		->seeStatusCode(200)
+		->seeJson([
+			'name' => $new_name,
+			'status' => Store::ACTIVE
+		])
+		->seeInDatabase('stores', ['name' => $new_name])
+		->notSeeInDatabase('stores', ['name' => $old_name])
+		;
+  }
+
+  public function testPutStoreFailedWithEmptyName()
+  {
+		$old_name = 'alice store';
+		$store = factory(Store::class)->create(['name' => $old_name]);
+		$this->seeInDatabase('stores', ['name' => $old_name])
+			->notSeeInDatabase('stores', ['name' => '']);
+
+		$this->put('/v1/stores/'.$store->id, [
+			'name' => ''
+		], ['Accept' => 'application/json'])
+		->seeStatusCode(422)
+		->notSeeInDatabase('stores', ['name' => ''])
+		;
   }
 
   public function testGetAllStores()
@@ -39,6 +104,19 @@ class StoresTest extends TestCase
 
     $list = json_decode($this->response->getContent(), true); 
     $this->assertCount(4, $list['data']);
+  }
+
+  public function testDeleteStoreSuccess()
+  {
+    $storeId = 123;
+    $stores = factory(Store::class, 1)->create(['id' => $storeId]);
+    $this->get('/v1/stores/'.$storeId)->seeStatusCode(200);
+
+    $this->delete('/v1/stores/'.$storeId)
+      ->seeStatusCode(204)
+      ->isEmpty()
+      ;
+    $this->get('/v1/stores/'.$storeId)->seeStatusCode(404);
   }
 
   public function testGetOneStoreSuccess()

@@ -35,8 +35,14 @@ $router->group(
       [
         'prefix' => '/stores'
       ], function ($router) {
+        $router->post('/', 'StoresController@create');
         $router->get('/', 'StoresController@index');
-        $router->get('/{id}', 'StoresController@show');
+        $router->get('/{id:[\d]+}', [
+          'as' => 'stores.show',
+          'uses' => 'StoresController@show'
+        ]);
+        $router->put('/{id:[\d]+}', 'StoresController@update');
+        $router->delete('/{id:[\d]+}', 'StoresController@destroy');
       });
   }
 );
