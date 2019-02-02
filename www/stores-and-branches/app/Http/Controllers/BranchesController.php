@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Store;
-use App\Http\Controllers\Workflows\BranchWorkflow;
+use App\Http\Controllers\Workflows\StoreWorkflow;
 
 use Illuminate\Http\Request;
 use App\Transformer\StoreTransformer;
@@ -14,11 +14,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BranchesController extends Controller
 {
-  private $branchWorkflow;
+  private $storeWorkflow;
 
   protected function after_construct()
   {
-    $this->branchWorkflow = new BranchWorkflow();
+    $this->storeWorkflow = new StoreWorkflow();
   }
 
   public function getBranch($storeId)
@@ -37,7 +37,7 @@ class BranchesController extends Controller
     $branchStoreId = ($request->branch_store_id);
 
     try {
-      $branchStore = $this->branchWorkflow->addBranch($storeId, $branchStoreId);
+      $branchStore = $this->storeWorkflow->addBranch($storeId, $branchStoreId);
     } catch (SameStoreIdException $e) { 
       return $this->response_error($e->getMessage(), $e->getCode());
     }

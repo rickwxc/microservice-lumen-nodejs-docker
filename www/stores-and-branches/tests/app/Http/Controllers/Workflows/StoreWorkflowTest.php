@@ -3,19 +3,19 @@
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Store;
-use App\Http\Controllers\Workflows\BranchWorkflow;
+use App\Http\Controllers\Workflows\StoreWorkflow;
 use App\Http\Exceptions\WorkflowException;
 
-class BranchWorkflowTest extends TestCase
+class StoreWorkflowTest extends TestCase
 {
   use DatabaseMigrations;
 
   private $mainStore;
-  private $branchWorkflow;
+  private $storeWorkflow;
 	public function setUp()
 	{
 		parent::setUp();
-    $this->branchWorkflow = new BranchWorkflow();
+    $this->storeWorkflow = new StoreWorkflow();
 
     $mainStore = factory(Store::class)->create();
     $branches = factory(Store::class, 2)->create(['parent_store_id' => $mainStore->id]);
@@ -34,21 +34,21 @@ class BranchWorkflowTest extends TestCase
     $this->expectExceptionMessage('Can not merge same store.');
     
     $fromStoreId = $targetStoreId = $this->mainStore->id;
-    $this->branchWorkflow->mergeBranch($fromStoreId, $targetStoreId);
+    $this->storeWorkflow->mergeBranch($fromStoreId, $targetStoreId);
   }
 
   public function testMergeBranchFailedDueToFromStoreIdNotFound()
   {
     $this->expectException(WorkflowException::class);
     $this->expectExceptionCode(404);
-    $this->branchWorkflow->addBranch('invalid from store id', $this->mainStore->id);
+    $this->storeWorkflow->addBranch('invalid from store id', $this->mainStore->id);
   }
 
   public function testMergeBranchFailedDueToTargetStoreIdNotFound()
   {
     $this->expectException(WorkflowException::class);
     $this->expectExceptionCode(404);
-    $this->branchWorkflow->addBranch($this->mainStore->id, 'invalid target store id');
+    $this->storeWorkflow->addBranch($this->mainStore->id, 'invalid target store id');
   }
 
   public function testCreateBranchFailedDueToSameStoreId()
@@ -58,20 +58,20 @@ class BranchWorkflowTest extends TestCase
     $this->expectExceptionMessage('Branch store id can not be same as main store id.');
     
     $anotherStore = factory(Store::class)->create();
-    $this->branchWorkflow->addBranch($this->mainStore->id, $this->mainStore->id);
+    $this->storeWorkflow->addBranch($this->mainStore->id, $this->mainStore->id);
   }
 
   public function testCreateBranchFailedDueToMainStoreIdNotfound()
   {
     $this->expectException(WorkflowException::class);
     $this->expectExceptionCode(404);
-    $this->branchWorkflow->addBranch('invalid main store id', $this->mainStore->id);
+    $this->storeWorkflow->addBranch('invalid main store id', $this->mainStore->id);
   }
 
   public function testCreateBranchFailedDueToBranchStoreIdNotfound()
   {
     $this->expectException(WorkflowException::class);
     $this->expectExceptionCode(404);
-    $this->branchWorkflow->addBranch($this->mainStore->id, 'invalid branch store id');
+    $this->storeWorkflow->addBranch($this->mainStore->id, 'invalid branch store id');
   }
 }

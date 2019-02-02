@@ -6,7 +6,7 @@ use App\Http\Exceptions\WorkflowException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
-class BranchWorkflow
+class StoreWorkflow
 {
 
   public function mergeBranch($fromStoreId, $targetStoreId)

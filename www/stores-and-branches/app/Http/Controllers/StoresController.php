@@ -8,18 +8,18 @@ use App\Transformer\StoreTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use App\Http\Response\FractalResponse;
-use App\Http\Controllers\Workflows\BranchWorkflow;
+use App\Http\Controllers\Workflows\StoreWorkflow;
 use App\Http\Exceptions\WorkflowException;
 
 
 class StoresController extends Controller
 {
 
-  private $branchWorkflow;
+  private $storeWorkflow;
 
   protected function after_construct()
   {
-    $this->branchWorkflow = new BranchWorkflow();
+    $this->storeWorkflow = new StoreWorkflow();
   }
 
   public function index()
@@ -92,7 +92,7 @@ class StoresController extends Controller
     $fromStoreId = ($request->fromStoreId);
 
     try {
-      $fromStore = $this->branchWorkflow->mergeBranch($fromStoreId, $targetStoreId);
+      $fromStore = $this->storeWorkflow->mergeBranch($fromStoreId, $targetStoreId);
     } catch (WorkflowException $e) { 
       return $this->response_error($e->getMessage(), $e->getCode());
     }
