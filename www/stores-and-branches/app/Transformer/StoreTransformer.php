@@ -11,6 +11,7 @@ class StoreTransformer extends TransformerAbstract {
     return [
       'id' => $store->id,
       'name' => $store->name,
+      'parent_store_id' => (int)$store->parent_store_id,
       'status' => $store->status,
       'created' => $store->created_at->toIso8601String(),
       'updated' => $store->updated_at->toIso8601String(),

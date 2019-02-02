@@ -8,10 +8,20 @@ use App\Transformer\StoreTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use App\Http\Response\FractalResponse;
+use App\Http\Controllers\Workflows\BranchWorkflow;
+use App\Http\Exceptions\WorkflowException;
 
 
 class StoresController extends Controller
 {
+
+  private $branchWorkflow;
+
+  protected function after_construct()
+  {
+    $this->branchWorkflow = new BranchWorkflow();
+  }
+
   public function index()
   {
     return $this->collection(Store::active()->get(), new StoreTransformer());
@@ -19,7 +29,13 @@ class StoresController extends Controller
 
   public function show($id)
   {
-    return $this->item(Store::active()->findOrFail($id), new StoreTransformer());
+    try{
+      $store = Store::active()->findOrFail($id);
+    } catch (ModelNotFoundException $e) { 
+      return $this->response_error('Store not found', 404);
+    }
+
+    return $this->item($store, new StoreTransformer());
   }
 
   public function create(Request $request)
@@ -32,16 +48,13 @@ class StoresController extends Controller
       'Location' => route('stores.show', ['id' => $store->id])
     ]);
   }
+
   public function update(Request $request, $id)
   {
 		try {
-			$store = Store::active()->findOrFail($id);
+      $store = Store::active()->findOrFail($id);
 		} catch (ModelNotFoundException $e) {
-			return response()->json([
-				'error' => [
-					'message' => 'Store not found'
-				]
-			], 404);
+      return $this->response_error('Store not found', 404);
 		}
 
 		$this->validate_rules($request);
@@ -63,9 +76,27 @@ class StoresController extends Controller
 
   public function destroy($id) 
   {
-    $store = Store::active()->findOrFail($id);
+    try{
+      $store = Store::active()->findOrFail($id);
+		} catch (ModelNotFoundException $e) {
+      return $this->response_error('Store not found', 404);
+		}
     $store->status = Store::PENDING_DELETE;
     $store->save();
     return response(null, 204); 
+  }
+
+  //merge from store into target store
+  public function merge(Request $request, $targetStoreId)
+  {
+    $fromStoreId = ($request->fromStoreId);
+
+    try {
+      $fromStore = $this->branchWorkflow->mergeBranch($fromStoreId, $targetStoreId);
+    } catch (WorkflowException $e) { 
+      return $this->response_error($e->getMessage(), $e->getCode());
+    }
+
+		return $this->item($fromStore, new StoreTransformer());
   }
 }

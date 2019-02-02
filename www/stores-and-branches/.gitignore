@@ -1,4 +1,5 @@
 /vendor
+/z_trash
 /.idea
 Homestead.json
 Homestead.yaml

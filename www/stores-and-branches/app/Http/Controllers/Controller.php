@@ -16,6 +16,18 @@ class Controller extends BaseController
   public function __construct(FractalResponse $fractal) 
   {
     $this->fractal = $fractal;
+    $this->after_construct();
+  }
+
+  protected function response_error($message, $code)
+  {
+    return response()->json([
+      'error' => $message
+    ], $code);
+  }
+
+  protected function after_construct()
+  {
   }
 
   /**

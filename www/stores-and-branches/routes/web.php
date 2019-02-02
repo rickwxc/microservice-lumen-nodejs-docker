@@ -43,6 +43,11 @@ $router->group(
         ]);
         $router->put('/{id:[\d]+}', 'StoresController@update');
         $router->delete('/{id:[\d]+}', 'StoresController@destroy');
+
+        $router->get('/{storeId:[\d]+}/branches', 'BranchesController@getBranch');
+        $router->post('/{storeId:[\d]+}/branches', 'BranchesController@addBranch');
+
+        $router->post('/{targetStoreId:[\d]+}/merge', 'StoresController@merge');
       });
   }
 );

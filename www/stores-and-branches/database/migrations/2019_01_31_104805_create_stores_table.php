@@ -16,8 +16,8 @@ class CreateStoresTable extends Migration
 		Schema::create('stores', function (Blueprint $table) {
 			$table->increments('id');
 			$table->string('name');
-			$table->enum('status', array('active', 'pending-delete')); 
-			$table->boolean('has_branch'); 
+      $table->integer('parent_store_id')->unsigned()->nullable()->default(0);
+			$table->enum('status', array('active', 'pending-delete'))->default('active'); 
 			$table->timestamps();
 		});
 	}

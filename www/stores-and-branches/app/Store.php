@@ -18,9 +18,16 @@ class Store extends Model
   ];
 
   protected $attributes = [
-    'status' => self::ACTIVE,
-    'has_branch' => false
+    'status' => self::ACTIVE
   ];
+
+  public function children() {
+    return self::active()->where('parent_store_id', '=', $this->id);
+  }
+
+  public function parent() {
+    return $this->belongsTo('Store','parent_store_id');
+  }
 
   public function scopeActive($query)
   {

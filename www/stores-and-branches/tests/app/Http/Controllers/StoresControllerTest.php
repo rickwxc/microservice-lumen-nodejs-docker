@@ -5,20 +5,20 @@ use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 use App\Store;
 
-class StoresTest extends TestCase
+class StoresControllerTest extends TestCase
 {
   use DatabaseMigrations;
 
-  public function setUp()
-  {
-    parent::setUp();
-    $this->withoutMiddleware();
-  }
+	public function setUp()
+	{
+		parent::setUp();
+		$this->withoutMiddleware();
+	}
 
-  public function tearDown()
-  {
-    parent::tearDown();
-  }
+	public function tearDown()
+	{
+		parent::tearDown();
+	}
 
   public function testCreateStore()
   {
@@ -86,8 +86,10 @@ class StoresTest extends TestCase
 
   public function testGetAllStores()
   {
-    $stores = factory(Store::class, 4)->create();
-    $stores = factory(Store::class, 2)->create(['status' => Store::PENDING_DELETE]);
+    factory(Store::class, 4)->create();
+    factory(Store::class, 2)->states('pending_delete')->create();
+
+    $this->assertCount(6, Store::all());
 
     $this->get('/v1/stores')
       ->seeStatusCode(200)
