@@ -1,4 +1,4 @@
-## Repo Stucture
+## Repo Structure
 
 ### [store service source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/www/stores-and-branches/)
 stores and branches api
@@ -8,7 +8,7 @@ stores and branches api
 * login to get api_key
 
 ### [api gateway source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/api-gateway/)
-* dispath request
+* dispatch request
 
 ## API Design
 For quick glance:
@@ -64,7 +64,7 @@ Here is the annotated graph:
 ![Image of Auth](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/images/api.jpg)
 
 ## System setup on docker 
-* 2 image for php running on auth service and store serice
+* 2 image for php running on auth service and store service
 * 1 image for mysql running auth, store databases, including test databases
 * 1 image for nodejs for Api gateway
 * 1 image for MongoDB for store mapping between api_key and Jwt Token
