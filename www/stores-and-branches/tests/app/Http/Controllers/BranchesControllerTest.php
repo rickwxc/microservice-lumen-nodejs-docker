@@ -30,7 +30,7 @@ class BranchesControllerTest extends TestCase
   {
     $anotherStore = factory(Store::class)->create();
     $this->post('/v1/stores/'.$this->mainStore->id.'/branches', [
-      'branch_store_id' => $anotherStore->id
+      'branchStoreId' => $anotherStore->id
     ], ['Accept' => 'application/json'])
       ->seeStatusCode(200)
       ->seeJson([

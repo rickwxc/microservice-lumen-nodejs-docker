@@ -34,10 +34,8 @@ class BranchesController extends Controller
 
   public function addBranch(Request $request, $storeId)
   {
-    $branchStoreId = ($request->branch_store_id);
-
     try {
-      $branchStore = $this->storeWorkflow->addBranch($storeId, $branchStoreId);
+      $branchStore = $this->storeWorkflow->addBranch($storeId, $request->branchStoreId);
     } catch (SameStoreIdException $e) { 
       return $this->response_error($e->getMessage(), $e->getCode());
     }
