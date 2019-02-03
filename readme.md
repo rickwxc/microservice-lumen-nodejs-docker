@@ -1,7 +1,38 @@
+## Repo Stucture
+
+### [store service source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/www/stores-and-branches/)
+stores and branches api  
+
+### [auth service source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/www/auth/)
+* register new user
+* login to get access
+
+### [api gateway source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/api-gateway/)
+* dispath request
+
 ## API Design
 For quick glance:
 
-here is the [swagger's file link](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/swaggers/stores/stores.yaml)
+![Image of stores](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/images/stores-shot.png)
+
+* create a store branch
+ - POST /v1/stores
+* update a store branch
+ - PUT /v1/stores/1
+* delete a store branch along with all of its children
+ - DELETE /v1/stores/1
+* move a store branch (along with all of its children) to a different store branch
+ - POST /v1/stores/1 
+  * with parameter fromStoreId
+* view all store branches with all of their children
+ - GET /v1/stores
+* view one specific store branch with all of its children
+ - GET /v1/stores/1?include=children
+ - GET /v1/stores/1?include=descendant
+* view one specific store branch without any children
+ - GET /v1/stores/1
+
+Here is the [API document in swagger format](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/swaggers/stores/stores.yaml)
 
 
 ## Database Design
@@ -25,6 +56,7 @@ id | name | parent_store_id
 I originally start with soft delete approach but eventually discard that design, due to the descendant recursive delete action.
 
 ## Service Architecture And Authentication
+
 
 The whole architecture designed is based on the following data flow, which is referred to this article: 
 
