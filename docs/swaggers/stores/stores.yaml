@@ -1,0 +1,192 @@
+swagger: "2.0"
+info:
+  description: "stores & branches"
+  version: "1.0.0"
+  title: "stores & branches"
+basePath: "/v1"
+schemes:
+- "https"
+paths:
+  '/stores/{storeId}':
+    get:
+      tags:
+        - Stores
+      summary: get a store by ID
+      description: Returns a single store
+      operationId: getStoreById
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: storeId
+          in: path
+          description: ID of store to return
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/Store'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Store not found
+    put:
+      tags:
+        - Stores
+      summary: Update an existing store
+      description: ''
+      operationId: updateStore
+      consumes:
+        - application/json
+        - application/xml
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: storeId
+          in: path
+          description: ID of store to return
+          required: true
+          type: integer
+          format: int64
+        - name: body
+          in: body
+          description: store need to be updated
+          required: true
+          schema:
+            $ref: '#/definitions/Store'
+      responses:
+        '400':
+          description: Invalid store ID
+        '404':
+          description: Store not found
+        '405':
+          description: Store name already exsit
+
+    delete:
+      tags:
+        - Stores
+      summary: Deletes a store
+      description: ''
+      operationId: deleteStore
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+        - name: storeId
+          in: path
+          description: Store id to delete
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '400':
+          description: Invalid store ID
+        '204':
+          description: delete successfully
+  '/stores/{storeId}/branches':
+    get:
+      tags:
+        - Branches
+      summary: list branches of given store
+      description: list branches of given store
+      responses:
+        200:
+          description: OK
+      parameters:
+        - name: storeId
+          in: path
+          description: ''
+          required: true
+          type: integer
+          format: int64
+    post:
+      tags:
+        - Branches
+      summary: create branch to given store
+      description: create branch to given store
+      consumes: 
+        - multipart/form-data
+      responses:
+        200:
+          description: OK
+      parameters:
+        - name: storeId
+          in: path
+          description: ''
+          required: true
+          type: integer
+          format: int64
+        - name: branchStoreId
+          in: formData
+          description: ''
+          required: true
+          type: integer
+          format: int64
+    delete:
+      tags:
+        - Branches
+      summary: add branch to given store
+      description: add branch to given store 
+      responses:
+        200:
+          description: OK
+      parameters:
+        - name: storeId
+          in: path
+          description: main store
+          required: true
+          type: integer
+          format: int64
+
+
+  /stores:
+    get:
+      tags:
+        - Stores
+      summary: Get all stores
+      description: Get all stores
+      operationId: getAllStore
+      produces:
+        - application/xml
+        - application/json
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Store'
+    post:
+      tags:
+        - 'Stores'
+      summary: Create new store
+      description: Create new store
+      operationId: createStore
+      produces:
+        - application/xml
+        - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Created store object"
+        required: true
+        schema:
+          $ref: "#/definitions/Store"
+      responses:
+        default:
+          description: "successful operation"
+
+
+definitions:
+  Store:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
