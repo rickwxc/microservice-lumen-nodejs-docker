@@ -15,7 +15,6 @@ paths:
       description: Returns a single store
       operationId: getStoreById
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: storeId
@@ -24,13 +23,18 @@ paths:
           required: true
           type: integer
           format: int64
+        - name: include
+          in: query
+          description: branches want to include, children/descendant
+          required: false
+          type: string
+          items:
+            type: string
       responses:
         '200':
           description: successful operation
           schema:
             $ref: '#/definitions/Store'
-        '400':
-          description: Invalid ID supplied
         '404':
           description: Store not found
     put:
@@ -41,9 +45,7 @@ paths:
       operationId: updateStore
       consumes:
         - application/json
-        - application/xml
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: storeId
@@ -59,12 +61,12 @@ paths:
           schema:
             $ref: '#/definitions/Store'
       responses:
-        '400':
-          description: Invalid store ID
+        '200':
+          description: Store updated
         '404':
           description: Store not found
-        '405':
-          description: Store name already exsit
+        '422':
+          description: Empty store name
 
     delete:
       tags:
@@ -73,7 +75,6 @@ paths:
       description: ''
       operationId: deleteStore
       produces:
-        - application/xml
         - application/json
       parameters:
         - name: storeId
@@ -83,16 +84,48 @@ paths:
           type: integer
           format: int64
       responses:
-        '400':
-          description: Invalid store ID
+        '404':
+          description: store not found
         '204':
           description: delete successfully
+  '/stores/{storeId}/merge':
+    post:
+      tags:
+        - Stores
+      summary: merge 2 stores
+      description: merge 
+      operationId: mergeStore
+      consumes:
+        - application/x-www-form-urlencoded  
+      produces:
+        - application/json
+      parameters:
+        - name: storeId
+          in: path
+          description: the parent store after merge
+          required: true
+          type: integer
+          format: int64
+        - name: fromStoreId
+          in: formData
+          description: the child store after merge
+          required: true
+          type: string
+      responses:
+        '200':
+          description: success, return child store after merge
+          schema:
+            $ref: '#/definitions/Store'
+        '412':
+          description: storeId same as fromStoreId  
+        '404':
+          description: One of stores not found  
   '/stores/{storeId}/branches':
     get:
       tags:
         - Branches
-      summary: list branches of given store
-      description: list branches of given store
+      summary: list child branches of given store
+      description: list child branches of given store
       responses:
         200:
           description: OK
@@ -126,22 +159,6 @@ paths:
           required: true
           type: integer
           format: int64
-    delete:
-      tags:
-        - Branches
-      summary: add branch to given store
-      description: add branch to given store 
-      responses:
-        200:
-          description: OK
-      parameters:
-        - name: storeId
-          in: path
-          description: main store
-          required: true
-          type: integer
-          format: int64
-
 
   /stores:
     get:
@@ -151,7 +168,6 @@ paths:
       description: Get all stores
       operationId: getAllStore
       produces:
-        - application/xml
         - application/json
       responses:
         '200':
@@ -167,7 +183,6 @@ paths:
       description: Create new store
       operationId: createStore
       produces:
-        - application/xml
         - application/json
       parameters:
       - in: "body"
@@ -190,3 +205,6 @@ definitions:
         format: "int64"
       name:
         type: "string"
+      parent_store_id:
+        type: "integer"
+        format: "int64"
