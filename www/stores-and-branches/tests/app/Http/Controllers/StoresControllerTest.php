@@ -30,9 +30,10 @@ class StoresControllerTest extends TestCase
       ->seeStatusCode(201)
       ->seeHeaderWithRegExp('Location', '#/stores/[\d]+$#')
 			->seeJson([
-				'name' => $name
+				'name' => $name,
+        'parent_store_id' => 0
       ])
-			->seeInDatabase('stores', ['name' => $name])
+			->seeInDatabase('stores', ['name' => $name, 'parent_store_id' => 0])
       ;
   }
 
@@ -84,19 +85,21 @@ class StoresControllerTest extends TestCase
 
   public function testGetAllStores()
   {
-    factory(Store::class, 4)->create();
-
-    $this->assertCount(4, Store::all());
+    $rootStores = factory(Store::class, 4)->create();
+    $children = factory(Store::class, 2)->create(['parent_store_id' => $rootStores[0]->id]);
+    $grandChildren = factory(Store::class, 2)->create(['parent_store_id' => $children[0]->id]);
 
     $this->get('/v1/stores')
       ->seeStatusCode(200)
-			->seeJsonStructure([
-				'data' => []
-			])
+      ->seeJsonStructure([
+        'data' => []
+      ])
       ;
 
     $list = json_decode($this->response->getContent(), true); 
     $this->assertCount(4, $list['data']);
+    $this->assertArrayEqual($rootStores, $list['data'], 'id');
+    $this->assertArrayEqual($list['data'][0]['branches']['data'], array_merge($children->toArray(), $grandChildren->toArray()), 'id');
   }
 
   public function testDeleteStore()
@@ -123,6 +126,45 @@ class StoresControllerTest extends TestCase
       ->seeJson([
         'id' => $store->id
       ]);
+  }
+
+  public function testGetOneStoreWithChildren()
+  {
+    $store = factory(Store::class)->create();
+    $children = factory(Store::class, 2)->create(['parent_store_id' => $store->id]);
+
+    $this->get('/v1/stores/'.$store->id.'?include=children')
+      ->seeStatusCode(200)
+      ->seeJsonStructure([
+        'data' => []
+      ])
+      ->seeJson([
+        'id' => $store->id
+      ]);
+    $store_from_api = json_decode($this->response->getContent(), true); 
+    $this->assertArrayEqual([$store_from_api['data']], [$store], 'id');
+    $this->assertArrayEqual($store_from_api['data']['branches']['data'], $children, 'id');
+  }
+
+  public function testGetOneStoreWithDescendants()
+  {
+    $store = factory(Store::class)->create();
+    $child = factory(Store::class)->create(['parent_store_id' => $store->id]);
+    $grandchild = factory(Store::class)->create(['parent_store_id' => $child->id]);
+
+    $this->get('/v1/stores/'.$store->id.'?include=descendant')
+      ->seeStatusCode(200)
+      ->seeJsonStructure([
+        'data' => []
+      ])
+      ->seeJson([
+        'id' => $store->id
+      ])
+      ;
+
+    $store_from_api = json_decode($this->response->getContent(), true); 
+    $this->assertArrayEqual([$store_from_api['data']], [$store], 'id');
+    $this->assertArrayEqual($store_from_api['data']['branches']['data'], [$child, $grandchild], 'id');
   }
 
   public function testGetOneStoreFailedDueToIdNotFound()

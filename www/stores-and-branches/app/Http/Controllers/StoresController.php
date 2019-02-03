@@ -24,15 +24,17 @@ class StoresController extends Controller
 
   public function index()
   {
-    return $this->collection(Store::all(), new StoreTransformer());
+    $stores = $this->storeWorkflow->allStores();
+    return $this->collection($stores, new StoreTransformer());
   }
 
-  public function show($id)
+  public function show(Request $request, $id)
   {
+    $include = $request->get('include');
     try{
-      $store = Store::findOrFail($id);
-    } catch (ModelNotFoundException $e) { 
-      return $this->response_error('Store not found', 404);
+      $store = $this->storeWorkflow->getStoreById($id, $include);
+		} catch (WorkflowException $e) {
+      return $this->response_error($e->getMessage(), $e->getCode());
     }
 
     return $this->item($store, new StoreTransformer());

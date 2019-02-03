@@ -74,4 +74,33 @@ class StoreWorkflow
 
     return $branchStore;
   }
+
+  public function allStores()
+  {
+    $rootStores = Store::rootStores()->get();
+    foreach($rootStores as $store){
+      $store->branches = $store->descendants();
+    }
+
+    return $rootStores;
+  }
+
+  public function getStoreById($storeId, $include = false)
+  {
+    try
+    {
+      $store = Store::findOrFail($storeId);
+    } catch (ModelNotFoundException $e) { 
+      throw new WorkflowException('Store not found.', 404);
+    }
+
+    if($include == 'children')
+    {
+      $store->branches = $store->children()->get();
+    }else if($include == 'descendant')
+    {
+      $store->branches = $store->descendants();
+    }
+    return $store;
+  }
 }

@@ -12,7 +12,7 @@ class StoreTransformer extends TransformerAbstract {
       'id' => $store->id,
       'name' => $store->name,
       'parent_store_id' => (int)$store->parent_store_id,
-      'status' => $store->status,
+      'branches' => ['data' => $store->branches],
       'created' => $store->created_at->toIso8601String(),
       'updated' => $store->updated_at->toIso8601String(),
     ];
