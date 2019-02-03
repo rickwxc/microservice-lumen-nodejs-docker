@@ -1,28 +1,13 @@
-For people who browse this repo.
+## API Design
 
-This is only experimental for building micro services.
+## Database Design
 
-Basic tech stack:
-1. Lumen for service implementation.
-2. nodejs as API gateway (haven't clean up yet, just place in for demo)
+## Service Architecture And Authentication
 
-Implemented:
-1. use Fractal to unify json data 
-2. create new user
-3. login and to get JWT token
-4. use JWT to protect private api calls
-5. End-to-end testing for user apis
-6. Localization for both message and test
+The whole architecture designed is based on the following data flow, which is referred to this article: 
+[Microservice Authentication And Authorization Solutions !](https://medium.com/tech-tajawal/microservice-authentication-and-authorization-solutions-e0e5e74b248a)
+Extra note been added.
+
+![Image of Auth](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/images/api.jpg)
 
 
-
-
-for demo purpose, opaque token been created by sha1
-opaque_token = crypto.createHash('sha1').update(jwt_token).digest('hex')
-
-
-Some reference repos: 
-docker original author: git@github.com:netojose/docker-lumen.git
-api-gateway: git@github.com:ecojuntak/api-gateway.git 
-
-https://medium.com/tech-tajawal/microservice-authentication-and-authorization-solutions-e0e5e74b248a
