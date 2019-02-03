@@ -19,8 +19,31 @@ router.post('/stores-protected-data', isAuthorized, (req, res) => {
     res.send(resp.data)
   }, (err, resp) => {
     if (err) return res.status(500).json({error: 'no access!'})
+  })
+})
+
+router.post(/v1\/stores/, isAuthorized, (req, res) => {
+  store_service_api.post(req.path, req.body, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
+    res.send(resp.data)
+  }, (err, resp) => {
+    if (err) return res.status(err.response.status).json({
+      status: err.response.status,
+      error: err.response.statusText
+    })
+  })
+})
+
+router.get(/v1\/stores/, isAuthorized, (req, res) => {
+  store_service_api.get(req.path, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
+    res.send(resp.data)
+  }, (err, resp) => {
+    if (err) return res.status(err.response.status).json({
+      status: err.response.status,
+      error: err.response.statusText
+    })
 
   })
 })
+
 
 module.exports = router
