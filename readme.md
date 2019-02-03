@@ -1,11 +1,11 @@
 ## Repo Stucture
 
 ### [store service source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/www/stores-and-branches/)
-stores and branches api  
+stores and branches api
 
 ### [auth service source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/www/auth/)
 * register new user
-* login to get access
+* login to get api_key
 
 ### [api gateway source](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/api-gateway/)
 * dispath request
@@ -33,7 +33,6 @@ For quick glance:
   - GET /v1/stores/1
 
 Here is the [API document in swagger format](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/swaggers/stores/stores.yaml)
-
 
 ## Database Design
 
@@ -63,7 +62,6 @@ The whole architecture designed is based on the following data flow, which is re
 [Microservice Authentication And Authorization Solutions](https://medium.com/tech-tajawal/microservice-authentication-and-authorization-solutions-e0e5e74b248a)
 Here is the annotated graph:
 ![Image of Auth](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/images/api.jpg)
-
 
 ## System setup on docker 
 * 2 image for php running on auth service and store serice
