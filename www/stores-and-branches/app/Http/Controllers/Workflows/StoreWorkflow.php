@@ -25,7 +25,7 @@ class StoreWorkflow
   private function deleteStore($storeId)
   {
     try{
-      $store = Store::active()->findOrFail($storeId);
+      $store = Store::findOrFail($storeId);
     } catch (ModelNotFoundException $e) {
       throw new WorkflowException('Store not found.', 404);
     }
@@ -45,8 +45,8 @@ class StoreWorkflow
     }
 
     try{
-      $targetStore = Store::active()->findOrFail($targetStoreId);
-      $fromStore = Store::active()->findOrFail($fromStoreId);
+      $targetStore = Store::findOrFail($targetStoreId);
+      $fromStore = Store::findOrFail($fromStoreId);
     } catch (ModelNotFoundException $e) { 
       throw new WorkflowException('Stores not found.', 404);
     }
@@ -64,8 +64,8 @@ class StoreWorkflow
     }
 
     try{
-      $store = Store::active()->findOrFail($storeId);
-      $branchStore = Store::active()->findOrFail($branchStoreId);
+      $store = Store::findOrFail($storeId);
+      $branchStore = Store::findOrFail($branchStoreId);
     } catch (ModelNotFoundException $e) { 
       throw new WorkflowException('main store or branch store not found.', 404);
     }

@@ -6,9 +6,3 @@ $factory->define(Store::class, function (Faker\Generator $faker) {
     'name' => $faker->name
   ];
 });
-
-$factory->state(Store::class, 'pending_delete', [
-  'status' => Store::PENDING_DELETE,
-]);
-
-

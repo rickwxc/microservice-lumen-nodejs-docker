@@ -9,6 +9,7 @@ class BranchesControllerTest extends TestCase
   use DatabaseMigrations;
 
   private $mainStore;
+  private $branches;
 	public function setUp()
 	{
 		parent::setUp();
@@ -17,6 +18,7 @@ class BranchesControllerTest extends TestCase
     $mainStore = factory(Store::class)->create();
     $branches = factory(Store::class, 2)->create(['parent_store_id' => $mainStore->id]);
     $this->mainStore = $mainStore;
+    $this->branches = $branches;
 	}
 
 	public function tearDown()
@@ -45,7 +47,8 @@ class BranchesControllerTest extends TestCase
     ], ['Accept' => 'application/json'])
       ->seeStatusCode(200)
       ->seeJson([
-        'status' => Store::ACTIVE
+        'id' => $this->branches[0]->id,
+        'parent_store_id' => $this->mainStore->id
       ])
 			->seeJsonStructure([
 				'data' => []

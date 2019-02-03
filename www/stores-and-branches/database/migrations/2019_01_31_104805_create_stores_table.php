@@ -17,7 +17,6 @@ class CreateStoresTable extends Migration
 			$table->increments('id');
 			$table->string('name');
       $table->integer('parent_store_id')->unsigned()->nullable()->default(0);
-			$table->enum('status', array('active', 'pending-delete'))->default('active'); 
 			$table->timestamps();
 		});
 	}

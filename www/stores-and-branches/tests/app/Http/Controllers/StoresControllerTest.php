@@ -30,8 +30,7 @@ class StoresControllerTest extends TestCase
       ->seeStatusCode(201)
       ->seeHeaderWithRegExp('Location', '#/stores/[\d]+$#')
 			->seeJson([
-				'name' => $name,
-				'status' => Store::ACTIVE
+				'name' => $name
       ])
 			->seeInDatabase('stores', ['name' => $name])
       ;
@@ -47,7 +46,7 @@ class StoresControllerTest extends TestCase
       ;
   }
 
-  public function testPutStore()
+  public function testUpdateStore()
   {
 		$old_name = 'alice store';
 		$new_name = 'Bob store';
@@ -60,15 +59,14 @@ class StoresControllerTest extends TestCase
 		], ['Accept' => 'application/json'])
 		->seeStatusCode(200)
 		->seeJson([
-			'name' => $new_name,
-			'status' => Store::ACTIVE
+			'name' => $new_name
 		])
 		->seeInDatabase('stores', ['name' => $new_name])
 		->notSeeInDatabase('stores', ['name' => $old_name])
 		;
   }
 
-  public function testPutStoreFailedWithEmptyName()
+  public function testUpdateStoreFailedWithEmptyName()
   {
 		$old_name = 'alice store';
 		$store = factory(Store::class)->create(['name' => $old_name]);
@@ -81,58 +79,49 @@ class StoresControllerTest extends TestCase
 		->seeStatusCode(422)
 		->notSeeInDatabase('stores', ['name' => ''])
 		;
+		$this->seeInDatabase('stores', ['name' => $old_name]);
   }
 
   public function testGetAllStores()
   {
     factory(Store::class, 4)->create();
-    factory(Store::class, 2)->states('pending_delete')->create();
 
-    $this->assertCount(6, Store::all());
+    $this->assertCount(4, Store::all());
 
     $this->get('/v1/stores')
       ->seeStatusCode(200)
-      ->seeJson([
-        'status' => Store::ACTIVE
-      ])
 			->seeJsonStructure([
 				'data' => []
 			])
-      ->dontSeeJson([
-        'status' => Store::PENDING_DELETE
-      ])
       ;
 
     $list = json_decode($this->response->getContent(), true); 
     $this->assertCount(4, $list['data']);
   }
 
-  public function testDeleteStoreSuccess()
+  public function testDeleteStore()
   {
-    $storeId = 123;
-    $stores = factory(Store::class, 1)->create(['id' => $storeId]);
-    $this->get('/v1/stores/'.$storeId)->seeStatusCode(200);
+    $store = factory(Store::class)->create();
+    $this->get('/v1/stores/'.$store->id)->seeStatusCode(200);
 
-    $this->delete('/v1/stores/'.$storeId)
+    $this->delete('/v1/stores/'.$store->id)
       ->seeStatusCode(204)
       ->isEmpty()
       ;
-    $this->get('/v1/stores/'.$storeId)->seeStatusCode(404);
+    $this->get('/v1/stores/'.$store->id)->seeStatusCode(404);
   }
 
-  public function testGetOneStoreSuccess()
+  public function testGetOneStore()
   {
-    $storeId = 123;
-    $stores = factory(Store::class, 1)->create(['id' => $storeId]);
+    $store = factory(Store::class)->create();
 
-    $this->get('/v1/stores/'.$storeId)
+    $this->get('/v1/stores/'.$store->id)
       ->seeStatusCode(200)
-			->seeJsonStructure([
-				'data' => []
-			])
+      ->seeJsonStructure([
+        'data' => []
+      ])
       ->seeJson([
-        'id' => $storeId,
-        'status' => Store::ACTIVE
+        'id' => $store->id
       ]);
   }
 
@@ -140,17 +129,5 @@ class StoresControllerTest extends TestCase
   {
     $this->get('/v1/stores/999')->seeStatusCode(404);
     $this->get('/v1/stores/notexistid')->seeStatusCode(404);
-  }
-
-  public function testGetOneStoreFailedDueToPendingDelete()
-  {
-    $storeId = 123;
-    $stores = factory(Store::class, 1)->create(['id' => $storeId]);
-    $this->get('/v1/stores/'.$storeId)->seeStatusCode(200);
-
-    $store = Store::findOrFail($storeId);
-    $store->status = Store::PENDING_DELETE;
-    $store->save();
-    $this->get('/v1/stores/'.$storeId)->seeStatusCode(404);
   }
 }

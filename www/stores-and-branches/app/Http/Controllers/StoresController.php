@@ -24,13 +24,13 @@ class StoresController extends Controller
 
   public function index()
   {
-    return $this->collection(Store::active()->get(), new StoreTransformer());
+    return $this->collection(Store::all(), new StoreTransformer());
   }
 
   public function show($id)
   {
     try{
-      $store = Store::active()->findOrFail($id);
+      $store = Store::findOrFail($id);
     } catch (ModelNotFoundException $e) { 
       return $this->response_error('Store not found', 404);
     }
@@ -52,7 +52,7 @@ class StoresController extends Controller
   public function update(Request $request, $id)
   {
 		try {
-      $store = Store::active()->findOrFail($id);
+      $store = Store::findOrFail($id);
 		} catch (ModelNotFoundException $e) {
       return $this->response_error('Store not found', 404);
 		}

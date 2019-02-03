@@ -24,7 +24,7 @@ class BranchesController extends Controller
   public function getBranch($storeId)
   {
     try{
-      $store = Store::active()->findOrFail($storeId);
+      $store = Store::findOrFail($storeId);
 		} catch (ModelNotFoundException $e) {
       return $this->response_error('Store not found', 404);
 		}
