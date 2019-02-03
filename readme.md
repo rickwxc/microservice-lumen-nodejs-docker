@@ -16,21 +16,21 @@ For quick glance:
 ![Image of stores](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/images/stores-shot.png)
 
 * create a store branch
- - POST /v1/stores
+  - POST /v1/stores
 * update a store branch
- - PUT /v1/stores/1
+  - PUT /v1/stores/1
 * delete a store branch along with all of its children
- - DELETE /v1/stores/1
+  - DELETE /v1/stores/1
 * move a store branch (along with all of its children) to a different store branch
- - POST /v1/stores/1 
-  * with parameter fromStoreId
+  - POST /v1/stores/1 
+    * with parameter fromStoreId
 * view all store branches with all of their children
- - GET /v1/stores
+  - GET /v1/stores
 * view one specific store branch with all of its children
- - GET /v1/stores/1?include=children
- - GET /v1/stores/1?include=descendant
+  - GET /v1/stores/1?include=children
+  - GET /v1/stores/1?include=descendant
 * view one specific store branch without any children
- - GET /v1/stores/1
+  - GET /v1/stores/1
 
 Here is the [API document in swagger format](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/swaggers/stores/stores.yaml)
 
