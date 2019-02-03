@@ -1,5 +1,4 @@
 <?php
-// todo IfHaveTime: add create/update protected fields check
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;

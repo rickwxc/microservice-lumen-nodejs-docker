@@ -77,12 +77,10 @@ class StoresController extends Controller
   public function destroy($id) 
   {
     try{
-      $store = Store::active()->findOrFail($id);
-		} catch (ModelNotFoundException $e) {
-      return $this->response_error('Store not found', 404);
+      $this->storeWorkflow->processDelete($id);
+		} catch (WorkflowException $e) {
+      return $this->response_error($e->getMessage(), $e->getCode());
 		}
-    $store->status = Store::PENDING_DELETE;
-    $store->save();
     return response(null, 204); 
   }
 

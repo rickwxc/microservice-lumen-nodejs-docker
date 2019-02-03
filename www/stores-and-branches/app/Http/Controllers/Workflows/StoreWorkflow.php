@@ -4,10 +4,38 @@ namespace App\Http\Controllers\Workflows;
 use App\Store;
 use App\Http\Exceptions\WorkflowException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 
 class StoreWorkflow
 {
+  public function processDelete($storeId)
+  {
+    DB::beginTransaction();
+
+    try{
+      $this->deleteStore($storeId);
+    } catch (WorkflowException $e) {
+      DB::rollBack();
+      throw $e;
+    }
+    DB::commit();
+  }
+
+  private function deleteStore($storeId)
+  {
+    try{
+      $store = Store::active()->findOrFail($storeId);
+    } catch (ModelNotFoundException $e) {
+      throw new WorkflowException('Store not found.', 404);
+    }
+
+    $branches = $store->children()->get();
+    foreach($branches as $branch){
+      $this->deleteStore($branch->id);
+    }
+    $store->delete();
+  }
 
   public function mergeBranch($fromStoreId, $targetStoreId)
   {
@@ -46,5 +74,4 @@ class StoreWorkflow
 
     return $branchStore;
   }
-
 }

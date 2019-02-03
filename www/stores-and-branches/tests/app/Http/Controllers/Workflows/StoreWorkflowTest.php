@@ -22,10 +22,25 @@ class StoreWorkflowTest extends TestCase
     $this->mainStore = $mainStore;
 	}
 
+  private function setupLeveledStoreBranches(){
+    $l1 = factory(Store::class)->create(['parent_store_id' => $this->mainStore->id]);
+    $l2 = factory(Store::class)->create(['parent_store_id' => $l1->id]);
+    $l3 = factory(Store::class)->create(['parent_store_id' => $l2->id]);
+    $l4 = factory(Store::class)->create(['parent_store_id' => $l3->id]);
+  }
+
 	public function tearDown()
 	{
 		parent::tearDown();
 	}
+
+  public function testDelete()
+  {
+    $this->setupLeveledStoreBranches();
+    $this->storeWorkflow->processDelete($this->mainStore->id);
+
+    $this->assertEmpty(Store::all()->toArray());
+  }
 
   public function testMergeBranchFailedDueToSameStoreId()
   {
