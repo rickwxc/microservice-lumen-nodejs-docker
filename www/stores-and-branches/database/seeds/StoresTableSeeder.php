@@ -13,5 +13,14 @@ class StoresTableSeeder extends Seeder {
 				'updated_at' => Carbon::now(),
 			]);
 		}
+		foreach (range('A', 'D') as $idx => $char) {
+			DB::table('stores')->insert([
+				'name' => $char.'1',
+				'parent_store_id' => $idx + 1,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now(),
+			]);
+		}
+
 	}
 }
