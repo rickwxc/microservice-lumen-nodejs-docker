@@ -22,8 +22,8 @@ For quick glance:
 * delete a store branch along with all of its children
   - DELETE /v1/stores/1
 * move a store branch (along with all of its children) to a different store branch
-  - POST /v1/stores/1 
-    * with parameter fromStoreId
+  - POST /v1/stores/1/branches
+    * with parameter branchStoreId
 * view all store branches with all of their children
   - GET /v1/stores
 * view one specific store branch with all of its children
@@ -33,6 +33,7 @@ For quick glance:
   - GET /v1/stores/1
 
 Here is the [API document in swagger format](https://github.com/rickwxc/microservice-lumen-nodejs-docker/blob/master/docs/swaggers/stores/stores.yaml)
+
 
 ## Database Design
 
@@ -75,3 +76,4 @@ work:
 
 * create databases
 * nodejs server config
+
