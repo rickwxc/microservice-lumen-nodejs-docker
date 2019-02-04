@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use App\Store;
-
 use Illuminate\Http\Request;
 use App\Transformer\StoreTransformer;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -42,9 +41,13 @@ class StoresController extends Controller
 
   public function create(Request $request)
   {
-		$this->validate_rules($request);
 
-    $store = Store::create($request->all());
+    try{
+      $store = $this->storeWorkflow->createStore($request->all());
+		} catch (WorkflowException $e) {
+      return $this->response_error($e->getMessage(), $e->getCode());
+    }
+
     $data = $this->item($store, new StoreTransformer());
     return response()->json($data, 201, [
       'Location' => route('stores.show', ['id' => $store->id])
@@ -53,28 +56,14 @@ class StoresController extends Controller
 
   public function update(Request $request, $id)
   {
-		try {
-      $store = Store::findOrFail($id);
-		} catch (ModelNotFoundException $e) {
-      return $this->response_error('Store not found', 404);
-		}
-
-		$this->validate_rules($request);
-
-		$store->fill($request->all());
-		$store->save();
+    try{
+      $store = $this->storeWorkflow->updateStore($id, $request->all());
+		} catch (WorkflowException $e) {
+      return $this->response_error($e->getMessage(), $e->getCode());
+    }
 
 		return $this->item($store, new StoreTransformer());
   }
-
-	protected function validate_rules(Request $request)
-	{
-		$this->validate($request, [
-			'name' => 'required|max:255',
-		], [
-			'name.required' => 'Please provide a :attribute.'
-		]);
-	}
 
   public function destroy($id) 
   {

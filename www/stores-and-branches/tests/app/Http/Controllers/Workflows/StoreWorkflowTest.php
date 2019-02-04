@@ -89,4 +89,18 @@ class StoreWorkflowTest extends TestCase
     $this->expectExceptionCode(404);
     $this->storeWorkflow->addBranch($this->mainStore->id, 'invalid branch store id');
   }
+
+  public function testvalidateStoreData()
+  {
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ 'name' => 'x' ]) === true);
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ 'name' => 'abc' ]) === true);
+  }
+
+  public function testvalidateStoreDataFailed()
+  {
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ 'name' => '   ' ]) !== true);
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ 'name' => '' ]) !== true);
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ ]) !== true);
+    $this->assertTrue($this->storeWorkflow->validateStoreData([ 'not_name' => '']) !== true);
+  }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Workflows;
 use App\Store;
+use Validator;
 use App\Http\Exceptions\WorkflowException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,48 @@ class StoreWorkflow
     }
 
     return $rootStores;
+  }
+
+  public function validateStoreData($storeMassData){
+    $validator = Validator::make($storeMassData, [
+      'name' => 'required|max:255',
+    ], [
+      'name.required' => 'Please provide a :attribute.'
+    ]);
+
+    if ($validator->fails()) {
+      return $validator->errors()->toArray();
+    }
+    return true;
+  }
+
+  public function updateStore($storeId, $storeMassData)
+  {
+		try {
+      $store = Store::findOrFail($storeId);
+		} catch (ModelNotFoundException $e) {
+      throw new WorkflowException('Store not found.', 404);
+		}
+
+    if(($error = $this->validateStoreData($storeMassData)) !== true){
+      throw new WorkflowException('Store update failed.', 422);
+    }
+
+		$store->fill($storeMassData);
+		$store->save();
+
+    return $store;
+  }
+
+  public function createStore($storeMassData)
+  {
+    if(($error = $this->validateStoreData($storeMassData)) !== true){
+      //todo: send error message to exception
+      throw new WorkflowException('Store create failed.', 422);
+    }
+
+    $store = Store::create($storeMassData);
+    return $store;
   }
 
   public function getStoreById($storeId, $include = false)
