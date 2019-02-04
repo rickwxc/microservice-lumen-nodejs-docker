@@ -31,7 +31,7 @@ router.post(/v1\/stores/, isAuthorized, (req, res) => {
 })
 
 router.get(/v1\/stores/, isAuthorized, (req, res) => {
-  store_service_api.get(req.path, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
+  store_service_api.get(req.url, {headers: {'Authorization': req.headers.authorization}}).then(resp => {
     res.send(resp.data)
   }, (err, resp) => {
     if (err) return res.status(err.response.status).json(err.response.data)
