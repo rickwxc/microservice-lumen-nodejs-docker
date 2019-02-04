@@ -46,8 +46,6 @@ $router->group(
 
         $router->get('/{storeId:[\d]+}/branches', 'BranchesController@getBranch');
         $router->post('/{storeId:[\d]+}/branches', 'BranchesController@addBranch');
-
-        $router->post('/{targetStoreId:[\d]+}/merge', 'StoresController@merge');
       });
   }
 );

@@ -59,56 +59,6 @@ class BranchesControllerTest extends TestCase
     $this->assertCount(2, $list['data']);
   }
 
-  public function testMergeBranch()
-  {
-    $anotherStore = factory(Store::class)->create();
-    $anotherStoreBranch = factory(Store::class)->create(['parent_store_id' => $anotherStore->id]);
-
-    $this->post('/v1/stores/'.$this->mainStore->id.'/merge', [
-      'fromStoreId' => $anotherStore->id
-    ], ['Accept' => 'application/json'])
-      ->seeStatusCode(200)
-      ->seeJson([
-        'id' => $anotherStore->id,
-        'parent_store_id' => $this->mainStore->id
-      ])
-    ;
-  }
-
-  public function testMergeBranchFailedDueToTargetStoreIsChildOfFromStore()
-  {
-    $anotherStore = factory(Store::class)->create();
-    $anotherStoreBranch = factory(Store::class)->create(['parent_store_id' => $anotherStore->id]);
-    $this->mainStore->parent_store_id = $anotherStore->id;
-    $this->mainStore->save();
-
-    $this->post('/v1/stores/'.$this->mainStore->id.'/merge', [
-      'fromStoreId' => $anotherStore->id
-    ], ['Accept' => 'application/json'])
-      ->seeStatusCode(405)
-      ->seeJson([
-        'error' => "Target store is fromStore's child or descendants."
-      ])
-    ;
-  }
-
-  public function testMergeBranchFailedDueToTargetStoreIsDescendantOfFromStore()
-  {
-    $anotherStore = factory(Store::class)->create();
-    $anotherStoreBranch = factory(Store::class)->create(['parent_store_id' => $anotherStore->id]);
-    $this->mainStore->parent_store_id = $anotherStoreBranch->id;
-    $this->mainStore->save();
-
-    $this->post('/v1/stores/'.$this->mainStore->id.'/merge', [
-      'fromStoreId' => $anotherStore->id
-    ], ['Accept' => 'application/json'])
-      ->seeStatusCode(405)
-      ->seeJson([
-        'error' => "Target store is fromStore's child or descendants."
-      ])
-    ;
-  }
-
   public function testCreateBranchFailedDueTuMainStoreIsBranchStoreChild()
   {
     $anotherStore = factory(Store::class)->create();

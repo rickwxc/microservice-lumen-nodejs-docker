@@ -38,29 +38,6 @@ class StoreWorkflow
     $store->delete();
   }
 
-  public function mergeBranch($fromStoreId, $targetStoreId)
-  {
-    if ($fromStoreId == $targetStoreId)
-    {
-      throw new WorkflowException('Can not merge same store.', 412);
-    }
-
-    try{
-      $targetStore = Store::findOrFail($targetStoreId);
-      $fromStore = Store::findOrFail($fromStoreId);
-    } catch (ModelNotFoundException $e) { 
-      throw new WorkflowException('Stores not found.', 404);
-    }
-
-    if($this->isFormCycle($targetStore, $fromStore)){
-      throw new WorkflowException("Target store is fromStore's child or descendants.", 405);
-    }
-
-    $fromStore->parent_store_id = $targetStore->id;
-    $fromStore->save();
-    return $fromStore;
-  }
-
   public function isFormCycle($mainStore, $branchStore)
   {
     $branchStoreIds = [$branchStore->id];

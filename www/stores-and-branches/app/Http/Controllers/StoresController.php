@@ -76,18 +76,4 @@ class StoresController extends Controller
 		}
     return response(null, 204); 
   }
-
-  //merge from store into target store
-  public function merge(Request $request, $targetStoreId)
-  {
-    $fromStoreId = ($request->fromStoreId);
-
-    try {
-      $fromStore = $this->storeWorkflow->mergeBranch($fromStoreId, $targetStoreId);
-    } catch (WorkflowException $e) { 
-      return $this->response_error($e->getMessage(), $e->getCode());
-    }
-
-		return $this->item($fromStore, new StoreTransformer());
-  }
 }
