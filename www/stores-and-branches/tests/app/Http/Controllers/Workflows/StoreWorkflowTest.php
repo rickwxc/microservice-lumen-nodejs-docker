@@ -140,4 +140,11 @@ class StoreWorkflowTest extends TestCase
     $this->assertTrue($this->storeWorkflow->isFormCycle($this->mainStore, $this->anotherStore));
   }
 
+  public function testGetBranch404()
+  {
+    $this->expectException(WorkflowException::class);
+    $this->expectExceptionCode(404);
+    $this->storeWorkflow->getBranch('not exists store id');
+  }
+
 }

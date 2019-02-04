@@ -148,6 +148,16 @@ class StoreWorkflow
     return $store;
   }
 
+  public function getBranch($storeId){
+    try{
+      $store = Store::findOrFail($storeId);
+		} catch (ModelNotFoundException $e) {
+      throw new WorkflowException('Store not found.', 404);
+		}
+    $branches = $store->children()->get();
+    return $branches;
+  }
+
   public function getStoreById($storeId, $include = false)
   {
     try

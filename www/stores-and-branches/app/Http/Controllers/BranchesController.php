@@ -23,12 +23,12 @@ class BranchesController extends Controller
 
   public function getBranch($storeId)
   {
-    try{
-      $store = Store::findOrFail($storeId);
-		} catch (ModelNotFoundException $e) {
-      return $this->response_error('Store not found', 404);
-		}
-    $branches = $store->children()->get();
+    try {
+      $branches = $this->storeWorkflow->getBranch($storeId);
+    } catch (WorkflowException $e) {
+      return $this->response_error($e->getMessage(), $e->getCode());
+    }
+
     return $this->collection($branches, new StoreTransformer());
   }
 
