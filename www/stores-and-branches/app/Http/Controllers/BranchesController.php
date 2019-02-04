@@ -36,7 +36,7 @@ class BranchesController extends Controller
   {
     try {
       $branchStore = $this->storeWorkflow->addBranch($storeId, $request->branchStoreId);
-    } catch (SameStoreIdException $e) { 
+    } catch (WorkflowException $e) { 
       return $this->response_error($e->getMessage(), $e->getCode());
     }
 

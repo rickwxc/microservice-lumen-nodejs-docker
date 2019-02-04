@@ -11,6 +11,9 @@ class StoreWorkflowTest extends TestCase
   use DatabaseMigrations;
 
   private $mainStore;
+  private $anotherStore;
+  private $anotherStoreBranches;
+
   private $storeWorkflow;
 	public function setUp()
 	{
@@ -20,6 +23,7 @@ class StoreWorkflowTest extends TestCase
     $mainStore = factory(Store::class)->create();
     $branches = factory(Store::class, 2)->create(['parent_store_id' => $mainStore->id]);
     $this->mainStore = $mainStore;
+
 	}
 
   private function setupLeveledStoreBranches(){
@@ -103,4 +107,37 @@ class StoreWorkflowTest extends TestCase
     $this->assertTrue($this->storeWorkflow->validateStoreData([ ]) !== true);
     $this->assertTrue($this->storeWorkflow->validateStoreData([ 'not_name' => '']) !== true);
   }
+
+  private function createAnotherStoreBranch(){
+    $anotherStore = factory(Store::class)->create();
+    $anotherStoreBranches = factory(Store::class, 2)->create(['parent_store_id' => $anotherStore->id]);
+
+    $this->anotherStore = $anotherStore;
+    $this->anotherStoreBranches = $anotherStoreBranches;
+  }
+
+  public function testIsFormCycleFalse() 
+  {
+    $this->createAnotherStoreBranch();
+    $this->assertFalse($this->storeWorkflow->isFormCycle($this->mainStore, $this->anotherStore));
+  }
+
+  public function testIsFormCycleTrueMainIsDescendantOfBranchStore() 
+  {
+    $this->createAnotherStoreBranch();
+    $this->mainStore->parent_store_id = $this->anotherStoreBranches[0]->id;
+    $this->mainStore->save();
+
+    $this->assertTrue($this->storeWorkflow->isFormCycle($this->mainStore, $this->anotherStore));
+  }
+
+  public function testIsFormCycleTrueMainIsChildOfBranchStore() 
+  {
+    $this->createAnotherStoreBranch();
+    $this->mainStore->parent_store_id = $this->anotherStore->id;
+    $this->mainStore->save();
+
+    $this->assertTrue($this->storeWorkflow->isFormCycle($this->mainStore, $this->anotherStore));
+  }
+
 }

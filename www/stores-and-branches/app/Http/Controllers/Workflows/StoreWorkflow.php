@@ -51,11 +51,26 @@ class StoreWorkflow
     } catch (ModelNotFoundException $e) { 
       throw new WorkflowException('Stores not found.', 404);
     }
+
+    if($this->isFormCycle($targetStore, $fromStore)){
+      throw new WorkflowException("Target store is fromStore's child or descendants.", 405);
+    }
+
     $fromStore->parent_store_id = $targetStore->id;
     $fromStore->save();
     return $fromStore;
   }
 
+  public function isFormCycle($mainStore, $branchStore)
+  {
+    $branchStoreIds = [$branchStore->id];
+    $branchStoreDescendants = $branchStore->descendants();
+    foreach($branchStoreDescendants as $store){
+      $branchStoreIds[] = $store->id;
+    }
+
+    return in_array($mainStore->parent_store_id, $branchStoreIds);
+  }
 
   public function addBranch($storeId, $branchStoreId)
   {
@@ -65,11 +80,16 @@ class StoreWorkflow
     }
 
     try{
-      $store = Store::findOrFail($storeId);
+      $mainStore = Store::findOrFail($storeId);
       $branchStore = Store::findOrFail($branchStoreId);
     } catch (ModelNotFoundException $e) { 
-      throw new WorkflowException('main store or branch store not found.', 404);
+      throw new WorkflowException('Main store or branch store not found.', 404);
     }
+
+    if($this->isFormCycle($mainStore, $branchStore)){
+      throw new WorkflowException("Main store is already branch store's child or descendants.", 405);
+    }
+
     $branchStore->parent_store_id = $storeId;
 		$branchStore->save();
 

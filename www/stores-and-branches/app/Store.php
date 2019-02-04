@@ -26,6 +26,7 @@ class Store extends Model
     return self::where('parent_store_id', '=', $this->id);
   }
 
+
   public function descendants() {
     $branches = $this->children()->get();
     $result = [];
