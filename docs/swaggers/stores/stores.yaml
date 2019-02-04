@@ -88,38 +88,6 @@ paths:
           description: store not found
         '204':
           description: delete successfully
-  '/stores/{storeId}/merge':
-    post:
-      tags:
-        - Stores
-      summary: merge 2 stores
-      description: merge 
-      operationId: mergeStore
-      consumes:
-        - application/x-www-form-urlencoded  
-      produces:
-        - application/json
-      parameters:
-        - name: storeId
-          in: path
-          description: the parent store after merge
-          required: true
-          type: integer
-          format: int64
-        - name: fromStoreId
-          in: formData
-          description: the child store after merge
-          required: true
-          type: string
-      responses:
-        '200':
-          description: success, return child store after merge
-          schema:
-            $ref: '#/definitions/Store'
-        '412':
-          description: storeId same as fromStoreId  
-        '404':
-          description: One of stores not found  
   '/stores/{storeId}/branches':
     get:
       tags:
@@ -139,8 +107,8 @@ paths:
     post:
       tags:
         - Branches
-      summary: create branch to given store
-      description: create branch to given store
+      summary: link a store under main store as a branch
+      description: link a store under main store as a branch, all descendants become main store's descendants
       consumes: 
         - multipart/form-data
       responses:
