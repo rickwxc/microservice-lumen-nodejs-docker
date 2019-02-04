@@ -16,9 +16,11 @@ class BranchesController extends Controller
 {
   private $storeWorkflow;
 
-  protected function after_construct()
+  public function __construct(StoreWorkflow $storeWorkflow, FractalResponse $fractal) 
   {
-    $this->storeWorkflow = new StoreWorkflow();
+    parent::__construct($fractal);
+
+    $this->storeWorkflow = $storeWorkflow;
   }
 
   public function getBranch($storeId)

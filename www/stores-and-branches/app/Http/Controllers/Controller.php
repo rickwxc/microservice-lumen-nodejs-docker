@@ -16,7 +16,6 @@ class Controller extends BaseController
   public function __construct(FractalResponse $fractal) 
   {
     $this->fractal = $fractal;
-    $this->after_construct();
   }
 
   protected function response_error($message, $code)
